@@ -174,3 +174,48 @@ $('#checkout').addEventListener('click', ()=>{
 renderProducts();
 renderCartItems();
 updateCartCount();
+
+// === Fallback add-to-cart + cart count updater ===
+(function(){
+  if(window.__fs_fallback_installed) return;
+  window.__fs_fallback_installed = true;
+
+  function updateCartCountLocal(){
+    try{
+      const cartLocal = JSON.parse(localStorage.getItem('fs_cart')||'{}');
+      const count = Object.values(cartLocal).reduce((s,i)=>s + (i.qty||0), 0);
+      const el = document.getElementById('cart-count');
+      if(el) el.textContent = count;
+    }catch(e){ console.error('updateCartCountLocal error', e); }
+  }
+
+  document.addEventListener('click', function(e){
+    const btn = e.target.closest && e.target.closest('.add-btn');
+    if(!btn) return;
+    const id = btn.dataset && btn.dataset.id;
+    if(!id){ console.warn('Add button missing data-id', btn); return; }
+
+    // try to find product object from PRODUCTS array if available
+    let product = null;
+    try{ product = (Array.isArray(PRODUCTS) && PRODUCTS.find(p=>p.id===id)) || null; }catch(e){ product = null; }
+
+    if(!product){
+      const nameEl = btn.closest('.card') && btn.closest('.card').querySelector('h3');
+      product = { id, name: nameEl ? nameEl.textContent.trim() : id, price: 0, img: '' };
+    }
+
+    // update localStorage cart
+    let cartLocal = JSON.parse(localStorage.getItem('fs_cart')||'{}');
+    if(!cartLocal[id]) cartLocal[id] = { ...product, qty: 0 };
+    cartLocal[id].qty++;
+    localStorage.setItem('fs_cart', JSON.stringify(cartLocal));
+
+    // update UI
+    updateCartCountLocal();
+    try{ if(typeof renderCartItems === 'function') renderCartItems(); }catch(e){}
+    console.log('Fallback: added', id, 'cart now:', cartLocal);
+  }, false);
+
+  // initial update on page load
+  setTimeout(updateCartCountLocal, 200);
+})();
