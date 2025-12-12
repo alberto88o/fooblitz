@@ -1,1 +1,110 @@
-<h1>Payment Page Coming Soon</h1>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FootShop — Payment</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="brand">
+      <h1>FOOBLITZ</h1>
+      <p class="tag">Official & Replica Jerseys</p>
+    </div>
+
+    <nav class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <a href="payment.html">Payment</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+    <div class="header-actions">
+      <button id="cart-btn" class="cart-btn">Cart <span id="cart-count">0</span></button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <h2>Checkout / Payment</h2>
+
+  <div id="payment-area">
+    <p id="no-items">Loading your cart...</p>
+
+    <div id="summary" style="display:none;max-width:700px">
+      <div id="summary-list"></div>
+      <div style="margin-top:16px;font-weight:700">Total: <span id="summary-total">₹0</span></div>
+
+      <div style="margin-top:18px">
+        <button id="do-checkout" class="primary-btn">Confirm & Place Order (Demo)</button>
+      </div>
+
+      <div style="margin-top:12px;color:#666">
+        <p>Payment options (demo): Cash on Delivery (COD) or contact us to pay via UPI/Bank transfer.</p>
+      </div>
+    </div>
+
+    <div id="thankyou" style="display:none;margin-top:20px">
+      <h3>Thank you — order placed!</h3>
+      <p>We cleared the demo cart. For real payment integration, we can add Razorpay or PayPal.</p>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>© 2025 FootShop. Built with ❤️</p>
+  </div>
+</footer>
+
+<script>
+  // Reads the same cart key used by the store (fs_cart)
+  function formatPrice(n){ return '₹' + Number(n).toLocaleString(); }
+  const cart = JSON.parse(localStorage.getItem('fs_cart') || '{}');
+  const keys = Object.keys(cart);
+  const summary = document.getElementById('summary');
+  const summaryList = document.getElementById('summary-list');
+  const summaryTotal = document.getElementById('summary-total');
+  const noItems = document.getElementById('no-items');
+
+  if(keys.length === 0){
+    noItems.textContent = 'Your cart is empty. Add products from the Products page.';
+  } else {
+    noItems.style.display = 'none';
+    summary.style.display = 'block';
+    let total = 0;
+    keys.forEach(id=>{
+      const it = cart[id];
+      const line = document.createElement('div');
+      line.style.padding = '8px 0';
+      line.innerHTML = `<strong>${it.name}</strong> — ${formatPrice(it.price)} × ${it.qty} = <strong>${formatPrice(it.price*it.qty)}</strong>`;
+      summaryList.appendChild(line);
+      total += it.price * it.qty;
+    });
+    summaryTotal.textContent = formatPrice(total);
+  }
+
+  document.getElementById('do-checkout').addEventListener('click', ()=>{
+    if(keys.length === 0){ alert('Cart is empty'); return; }
+    // Demo behaviour: clear the cart and show thank you
+    localStorage.removeItem('fs_cart');
+    summary.style.display = 'none';
+    document.getElementById('thankyou').style.display = 'block';
+    // update cart count in header if user returns (script.js will update on other pages)
+    document.getElementById('cart-count').textContent = 0;
+  });
+
+  // small hook to open cart drawer if present (for consistency)
+  const cartBtn = document.getElementById('cart-btn');
+  if(cartBtn) cartBtn.addEventListener('click', ()=> {
+    const drawer = document.getElementById('cart-drawer');
+    if(drawer) drawer.classList.add('open');
+  });
+</script>
+
+</body>
+</html>
+
