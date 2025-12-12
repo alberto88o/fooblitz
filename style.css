@@ -139,15 +139,15 @@ body{
 
   
 .brand h1 {
-  font-size: 100px;        /* change size: larger = bigger number */
-  font-weight: 1000;       /* change boldness: 400 normal, 700 bold, 800 extra-bold */
+  font-size: 30px;        /* change size: larger = bigger number */
+  font-weight: 900;       /* change boldness: 400 normal, 700 bold, 800 extra-bold */
   color: #ffffff;         /* heading color (hex) */
   letter-spacing: 0.5px;  /* small spacing between letters */
 }
 
 /* tagline under brand */
 .brand .tag {
-  font-size: 100px;
+  font-size: 30px;
   font-weight: 500;
   color: #dcdcdc;         /* lighter color for subtitle */
 }
@@ -168,20 +168,20 @@ body{
 
 /* ===== Product card title & description ===== */
 .card h3 {
-  font-size: 100px;        /* name size */
+  font-size: 30px;        /* name size */
   font-weight: 700;       /* name weight */
   color: #111111;         /* name color */
 }
 
 .card p {
-  font-size: 100px;        /* description size */
+  font-size: 30px;        /* description size */
   font-weight: 400;       /* description weight */
   color: #666666;         /* description color */
 }
 
 /* ===== Price styling ===== */
 .price-row strong {
-  font-size: 100px;        /* price size */
+  font-size: 30px;        /* price size */
   font-weight: 800;       /* price bold */
   color: #0b74de;         /* price color (makes it pop) */
 }
