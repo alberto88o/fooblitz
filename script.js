@@ -1,7 +1,7 @@
 /* script.js - simple product rendering + cart (localStorage) */
 
 const PRODUCTS = [
-  { id: "p1", name: "Mumbai FC 2024 Home Jersey", price: 1299, img: "https://raw.githubusercontent.com/alberto88o/ftkk/main/Screenshot%202025-12-12%20155416.png" {
+  { id: "p1", name: "goa FC 2024 Home Jersey", price: 1299, img: "https://raw.githubusercontent.com/alberto88o/ftkk/main/Screenshot%202025-12-12%20155416.png" {
   id: "p6",
   name: "Custom Jersey 2025",
   price: 999,
