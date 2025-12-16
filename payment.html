@@ -1,22 +1,27 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>FootShop — Payment</title>
+  <meta charset="UTF-8" />
+  <title>FOOBLITZ – Payment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <link rel="stylesheet" href="style.css">
+
   <style>
-    /* small local styles for payment page components */
-    #payment-area{max-width:900px;margin:18px auto}
-    #upi-section{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
-    #upi-qr{padding:8px;background:#fff;border-radius:8px;box-shadow:0 4px 10px rgba(0,0,0,.06);display:flex;flex-direction:column;align-items:center}
-    #upi-qr img{width:170px;height:170px;object-fit:contain}
-    .summary-row{padding:10px 0;border-bottom:1px solid #f0f0f0}
-    .primary-btn{background:#0b74de;color:#fff;padding:10px 14px;border-radius:8px;border:0;cursor:pointer}
-    .secondary-btn{background:#eee;border:0;padding:8px 10px;border-radius:8px;cursor:pointer}
+    .wrap{max-width:1100px;margin:30px auto;padding:0 16px}
+    .box{background:#fff;padding:20px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.08);margin-bottom:24px}
+    .row{display:flex;gap:20px;flex-wrap:wrap}
+    .col{flex:1;min-width:260px}
+    .btn{width:100%;padding:14px;font-size:16px;border-radius:10px;border:none;cursor:pointer}
+    .primary{background:#0b74de;color:#fff}
+    .success{background:#25d366;color:#fff}
+    .btn:disabled{opacity:.6}
+    .qr img{width:220px;height:220px}
+    .total{font-size:20px;font-weight:700;margin-top:10px}
     .muted{color:#666;font-size:14px}
   </style>
 </head>
+
 <body>
 
 <header class="site-header">
@@ -25,269 +30,111 @@
       <h1>FOOBLITZ</h1>
       <p class="tag">Official & Replica Jerseys</p>
     </div>
-
     <nav class="main-nav">
       <a href="index.html">Home</a>
       <a href="products.html">Products</a>
       <a href="payment.html">Payment</a>
       <a href="contact.html">Contact</a>
     </nav>
-
-    <div class="header-actions">
-      <button id="cart-btn" class="cart-btn">Cart <span id="cart-count">0</span></button>
-    </div>
   </div>
 </header>
 
-<main class="container">
+<div class="wrap">
+
   <h2>Checkout / Payment</h2>
 
-  <div id="payment-area">
-    <!-- Cart summary -->
-    <div id="cart-summary" style="background:#fff;padding:16px;border-radius:10px;box-shadow:0 6px 18px rgba(2,6,23,0.04);margin-bottom:18px">
-      <h3>Your order</h3>
-      <div id="summary-list" style="margin-top:8px"></div>
-      <div style="margin-top:12px;font-weight:700">Total: <span id="summary-total">₹0</span></div>
-      <p id="no-items" class="muted" style="display:none;margin-top:8px">Your cart is empty. Add items from the Products page.</p>
-    </div>
+  <!-- ORDER SUMMARY -->
+  <div class="box">
+    <h3>Your Order</h3>
+    <div id="items"></div>
+    <div class="total">Total: <span id="total">₹0</span></div>
+    <p id="empty" class="muted"></p>
+  </div>
 
-    <!-- UPI / GPay quick-pay -->
-    <section id="upi-section" style="margin-bottom:18px">
-      <div style="flex:1;min-width:260px">
-        <h3>Pay with UPI / GPay</h3>
-        <p class="muted">Open Google Pay, PhonePe or another UPI app on mobile — or scan the QR from desktop.</p>
+  <!-- UPI PAYMENT -->
+  <div class="box">
+    <h3>Pay using UPI / GPay</h3>
+    <p class="muted">Pay via Google Pay / PhonePe / Paytm. Scan QR on desktop.</p>
 
-        <div style="display:flex;gap:10px;align-items:center;margin-top:8px">
-          <button id="gpay-btn" class="primary-btn">Pay with GPay / UPI</button>
-          <button id="refresh-qr" class="secondary-btn">Refresh QR</button>
-        </div>
-
-        <p id="upi-warn" style="color:#b33;margin-top:8px;display:none">UPI ID not configured. Edit payment.html to set your UPI VPA.</p>
+    <div class="row">
+      <div class="col">
+        <button id="upiBtn" class="btn primary">Pay with UPI / GPay</button>
       </div>
-
-      <div id="upi-qr" style="min-width:190px">
-        <img id="qr-img" alt="UPI QR" src="" />
-        <div style="font-size:13px;text-align:center;margin-top:6px">Scan to pay (UPI)</div>
+      <div class="col qr">
+        <img id="qr" alt="UPI QR">
+        <div class="muted">Scan to Pay</div>
       </div>
-    </section>
-
-    <!-- Razorpay demo button (optional) -->
-    <div style="margin-top:12px">
-      <h3>Pay with Razorpay (Demo)</h3>
-      <p class="muted">Optional client-side demo checkout — replace RAZORPAY_TEST_KEY with your test key to try.</p>
-      <button id="razorpay-btn" class="primary-btn">Pay with Razorpay (Demo)</button>
-    </div>
-
-    <div style="margin-top:18px">
-      <button id="do-checkout" class="primary-btn">Confirm & Place Order (Demo)</button>
-    </div>
-
-    <div id="thankyou" style="display:none;margin-top:20px;background:#fff;padding:12px;border-radius:8px">
-      <h3>Thank you — order placed!</h3>
-      <p class="muted">We cleared the demo cart. For production payments we can integrate Razorpay server-side or another gateway for verification.</p>
     </div>
   </div>
-</main>
 
-<footer class="site-footer">
-  <div class="container">
-    <p>© 2025 FootShop. Built with ❤️</p>
+  <!-- WHATSAPP ORDER -->
+  <div class="box">
+    <h3>Send Order on WhatsApp</h3>
+    <p class="muted">After payment, send your order to confirm.</p>
+    <button id="waBtn" class="btn success">Confirm & Send Order on WhatsApp</button>
   </div>
-</footer>
 
-<!-- RAZORPAY (optional) -->
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</div>
 
-<!-- Full payment script: UPI + cart summary + Razorpay demo -->
 <script>
-/* ====== CONFIG: set your details here ====== */
-const merchantVPA = "robyjaison@oksbi";   // <<-- REPLACE: example alberto@ybl
-const merchantName = "FOOBLITZ STORE";
-const paymentNote = "FootShop order";
-const RAZORPAY_TEST_KEY = "rzp_test_KEY_HERE"; // <<-- optional: replace with your test key for Razorpay demo
+/* ================= CONFIG (CHANGE THIS) ================= */
+const UPI_ID = "robyjaison@oksbi";            // 🔴 YOUR UPI ID
+const SHOP_NAME = "FOOBLITZ";
+const WHATSAPP = "918848882453";          // 🔴 YOUR WHATSAPP NUMBER (India)
 
-/* ====== HELPERS ====== */
-function formatPrice(n){ return '₹' + Number(n).toLocaleString(); }
-function formatPriceNumber(x){ return Number(x).toFixed(2); }
+/* ================= LOGIC ================= */
+const cart = JSON.parse(localStorage.getItem("fs_cart") || "{}");
+const keys = Object.keys(cart);
+let total = 0;
 
-function buildUpiUri(amount){
-  const pa = encodeURIComponent(merchantVPA);
-  const pn = encodeURIComponent(merchantName);
-  const am = encodeURIComponent(formatPriceNumber(amount));
-  const tn = encodeURIComponent(paymentNote);
-  return `upi://pay?pa=${pa}&pn=${pn}&am=${am}&tn=${tn}&cu=INR`;
-}
-function buildQrUri(upiUri){
-  return "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(upiUri);
-}
+const itemsDiv = document.getElementById("items");
+const totalEl = document.getElementById("total");
+const emptyEl = document.getElementById("empty");
 
-/* ====== CART READ & RENDER ====== */
-function getCartObj(){
-  try { return JSON.parse(localStorage.getItem('fs_cart') || '{}'); }
-  catch(e){ console.error('cart parse error', e); return {}; }
-}
-
-function getCartTotal(){
-  const cart = getCartObj();
-  return Object.values(cart).reduce((s,it)=> s + (Number(it.price||0) * Number(it.qty||0)), 0);
-}
-
-function renderSummary(){
-  const cart = getCartObj();
-  const keys = Object.keys(cart);
-  const summaryList = document.getElementById('summary-list');
-  const summaryTotal = document.getElementById('summary-total');
-  const noItems = document.getElementById('no-items');
-  summaryList.innerHTML = '';
-  if(keys.length === 0){
-    noItems.style.display = 'block';
-    summaryTotal.textContent = formatPrice(0);
-    return;
-  }
-  noItems.style.display = 'none';
-  let total = 0;
-  keys.forEach(k=>{
-    const it = cart[k];
-    total += Number(it.price||0) * Number(it.qty||0);
-    const row = document.createElement('div');
-    row.className = 'summary-row';
-    row.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center"><div>
-      <div style="font-weight:700">${it.name}</div>
-      <div class="muted" style="font-size:13px">${it.size ? 'Size: '+it.size : ''}</div>
-    </div><div style="text-align:right">
-      <div style="font-weight:700">${formatPrice(Number(it.price||0)*Number(it.qty||0))}</div>
-      <div class="muted" style="font-size:13px">${it.qty} × ${formatPrice(it.price)}</div>
-    </div></div>`;
-    summaryList.appendChild(row);
+if(keys.length === 0){
+  emptyEl.textContent = "Your cart is empty.";
+}else{
+  keys.forEach(id=>{
+    const p = cart[id];
+    const line = document.createElement("div");
+    line.textContent = `${p.name} × ${p.qty} = ₹${p.price * p.qty}`;
+    itemsDiv.appendChild(line);
+    total += p.price * p.qty;
   });
-  summaryTotal.textContent = formatPrice(total);
+  totalEl.textContent = "₹" + total;
 }
 
-/* ====== UPI / QR LOGIC ====== */
-function updateUpiElements(){
-  const total = getCartTotal();
-  const gpayBtn = document.getElementById('gpay-btn');
-  const qrImg = document.getElementById('qr-img');
-  const upiWarn = document.getElementById('upi-warn');
-
-  if(!merchantVPA || merchantVPA === "YOUR_UPI_ID_HERE"){
-    // disable
-    if(gpayBtn) gpayBtn.disabled = true;
-    if(qrImg) qrImg.src = '';
-    if(upiWarn) upiWarn.style.display = 'block';
-    return;
-  } else {
-    if(gpayBtn) gpayBtn.disabled = false;
-    if(upiWarn) upiWarn.style.display = 'none';
-  }
-
-  if(total <= 0){
-    if(gpayBtn) gpayBtn.textContent = 'Cart is empty — add items';
-    if(qrImg) qrImg.src = '';
-    return;
-  }
-
-  const upi = buildUpiUri(total);
-  if(gpayBtn) gpayBtn.textContent = `Pay ${formatPriceNumber(total)} with GPay / UPI`;
-  if(qrImg) qrImg.src = buildQrUri(upi);
+/* ================= UPI ================= */
+function upiLink(){
+  return `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(SHOP_NAME)}&am=${total}&cu=INR`;
 }
 
-/* ====== RAZORPAY DEMO ====== */
-function openRazorpayDemo(){
-  const cart = getCartObj();
-  const keys = Object.keys(cart);
-  if(keys.length === 0){ alert('Cart is empty'); return; }
-  const amount = Math.round(getCartTotal() * 100); // paise
+document.getElementById("upiBtn").onclick = ()=>{
+  if(total <= 0) return;
+  window.location.href = upiLink();
+};
 
-  if(!RAZORPAY_TEST_KEY || RAZORPAY_TEST_KEY === 'rzp_test_KEY_HERE'){
-    alert('Razorpay test key not configured (this is optional). You can still use the UPI button.');
-    return;
-  }
-
-  const options = {
-    key: RAZORPAY_TEST_KEY,
-    amount: amount,
-    currency: "INR",
-    name: merchantName,
-    description: "FootShop order (demo)",
-    handler: function(response){
-      // Demo: clear cart after successful demo payment
-      localStorage.removeItem('fs_cart');
-      renderSummary();
-      updateCartCount();
-      document.getElementById('thankyou').style.display = 'block';
-      alert('Payment success (demo). Payment id: ' + (response && response.razorpay_payment_id));
-    },
-    prefill: { name: "", email: "" },
-    theme: { color: "#0b74de" }
-  };
-  const rzp = new Razorpay(options);
-  rzp.open();
+if(total > 0){
+  document.getElementById("qr").src =
+    "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" +
+    encodeURIComponent(upiLink());
 }
 
-/* ====== CART COUNT UPDATE (header) ====== */
-function updateCartCount(){
-  try{
-    const cart = getCartObj();
-    const count = Object.values(cart).reduce((s,i)=> s + (i.qty||0), 0);
-    const el = document.getElementById('cart-count');
-    if(el) el.textContent = count;
-  }catch(e){}
-}
+/* ================= WHATSAPP ================= */
+document.getElementById("waBtn").onclick = ()=>{
+  if(total <= 0) return;
 
-/* ====== INIT & EVENT HANDLERS ====== */
-document.addEventListener('DOMContentLoaded', function(){
-  renderSummary();
-  updateCartCount();
-  updateUpiElements();
-
-  // UPI button click opens UPI intent
-  const gpayBtn = document.getElementById('gpay-btn');
-  if(gpayBtn) gpayBtn.addEventListener('click', function(){
-    const total = getCartTotal();
-    if(total <= 0){ alert('Your cart is empty. Add items first.'); return; }
-    if(!merchantVPA || merchantVPA === "YOUR_UPI_ID_HERE"){ alert('UPI ID not configured in payment.html'); return; }
-    const upi = buildUpiUri(total);
-    // open intent (on mobile will open the UPI app)
-    window.location.href = upi;
+  let msg = `🛒 *NEW ORDER – ${SHOP_NAME}*%0A%0A`;
+  keys.forEach(id=>{
+    const p = cart[id];
+    msg += `👕 ${p.name}%0AQty: ${p.qty}%0A₹${p.price * p.qty}%0A%0A`;
   });
+  msg += `💰 *Total: ₹${total}*`;
 
-  // refresh QR button
-  const refreshBtn = document.getElementById('refresh-qr');
-  if(refreshBtn) refreshBtn.addEventListener('click', updateUpiElements);
-
-  // razorpay demo button
-  const rzBtn = document.getElementById('razorpay-btn');
-  if(rzBtn) rzBtn.addEventListener('click', openRazorpayDemo);
-
-  // Confirm & Place Order (demo)
-  const doCheckout = document.getElementById('do-checkout');
-  if(doCheckout) doCheckout.addEventListener('click', function(){
-    const cart = getCartObj();
-    if(Object.keys(cart).length === 0){ alert('Cart is empty'); return; }
-    // Demo: clear cart and show thank you
-    localStorage.removeItem('fs_cart');
-    renderSummary();
-    updateCartCount();
-    document.getElementById('thankyou').style.display = 'block';
-    alert('Order placed (demo). We cleared the cart.');
-  });
-
-  // Poll localStorage for changes (simple) to update summary/QR when cart changes on other pages
-  let last = localStorage.getItem('fs_cart') || '{}';
-  setInterval(function(){
-    const cur = localStorage.getItem('fs_cart') || '{}';
-    if(cur !== last){
-      last = cur;
-      renderSummary();
-      updateCartCount();
-      updateUpiElements();
-    }
-  }, 700);
-});
+  window.open(`https://wa.me/${WHATSAPP}?text=${msg}`, "_blank");
+  localStorage.removeItem("fs_cart");
+};
 </script>
 
 </body>
 </html>
-
-
