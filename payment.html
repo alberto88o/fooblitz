@@ -1,88 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>FOOBLITZ – Payment</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8">
+<title>FOOBLITZ – Checkout</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css">
 
-  <style>
-    .wrap{max-width:1100px;margin:30px auto;padding:0 16px}
-    .box{background:#fff;padding:20px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.08);margin-bottom:24px}
-    .row{display:flex;gap:20px;flex-wrap:wrap}
-    .col{flex:1;min-width:260px}
-    .btn{width:100%;padding:14px;font-size:16px;border-radius:10px;border:none;cursor:pointer}
-    .primary{background:#0b74de;color:#fff}
-    .success{background:#25d366;color:#fff}
-    .btn:disabled{opacity:.6}
-    .qr img{width:220px;height:220px}
-    .total{font-size:20px;font-weight:700;margin-top:10px}
-    .muted{color:#666;font-size:14px}
-  </style>
+<style>
+body{background:#f5f7fb}
+.wrap{max-width:1100px;margin:30px auto;padding:0 16px}
+.box{background:#fff;padding:20px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.08);margin-bottom:24px}
+.row{display:flex;gap:20px;flex-wrap:wrap}
+.col{flex:1;min-width:260px}
+input,textarea{width:100%;padding:12px;border-radius:8px;border:1px solid #ccc;margin-top:8px}
+.btn{width:100%;padding:14px;font-size:16px;border-radius:10px;border:none;cursor:pointer}
+.primary{background:#0b74de;color:#fff}
+.cod{background:#444;color:#fff}
+.whatsapp{background:#25d366;color:#fff}
+.qr img{width:220px;height:220px}
+.total{font-size:20px;font-weight:700;margin-top:10px}
+.muted{color:#666;font-size:14px}
+</style>
 </head>
 
 <body>
 
-<header class="site-header">
-  <div class="container header-inner">
-    <div class="brand">
-      <h1>FOOBLITZ</h1>
-      <p class="tag">Official & Replica Jerseys</p>
-    </div>
-    <nav class="main-nav">
-      <a href="index.html">Home</a>
-      <a href="products.html">Products</a>
-      <a href="payment.html">Payment</a>
-      <a href="contact.html">Contact</a>
-    </nav>
-  </div>
-</header>
-
 <div class="wrap">
 
-  <h2>Checkout / Payment</h2>
+<h2>Checkout</h2>
 
-  <!-- ORDER SUMMARY -->
-  <div class="box">
-    <h3>Your Order</h3>
-    <div id="items"></div>
-    <div class="total">Total: <span id="total">₹0</span></div>
-    <p id="empty" class="muted"></p>
-  </div>
+<!-- ORDER SUMMARY -->
+<div class="box">
+<h3>Your Order</h3>
+<div id="items"></div>
+<div class="total">Total: <span id="total">₹0</span></div>
+<p id="empty" class="muted"></p>
+</div>
 
-  <!-- UPI PAYMENT -->
-  <div class="box">
-    <h3>Pay using UPI / GPay</h3>
-    <p class="muted">Pay via Google Pay / PhonePe / Paytm. Scan QR on desktop.</p>
+<!-- CUSTOMER DETAILS -->
+<div class="box">
+<h3>Customer Details</h3>
+<input id="name" placeholder="Full Name">
+<input id="phone" placeholder="Phone Number">
+<textarea id="address" placeholder="Delivery Address"></textarea>
+</div>
 
-    <div class="row">
-      <div class="col">
-        <button id="upiBtn" class="btn primary">Pay with UPI / GPay</button>
-      </div>
-      <div class="col qr">
-        <img id="qr" alt="UPI QR">
-        <div class="muted">Scan to Pay</div>
-      </div>
-    </div>
-  </div>
+<!-- PAYMENT -->
+<div class="box">
+<h3>Pay using UPI / GPay</h3>
+<p class="muted">Mobile → opens app | Desktop → scan QR</p>
 
-  <!-- WHATSAPP ORDER -->
-  <div class="box">
-    <h3>Send Order on WhatsApp</h3>
-    <p class="muted">After payment, send your order to confirm.</p>
-    <button id="waBtn" class="btn success">Confirm & Send Order on WhatsApp</button>
-  </div>
+<div class="row">
+<div class="col">
+<button id="upiBtn" class="btn primary">Pay with UPI / GPay</button>
+</div>
+<div class="col qr">
+<img id="qr">
+</div>
+</div>
+
+<button id="codBtn" class="btn cod" style="margin-top:15px">Cash on Delivery (COD)</button>
+</div>
+
+<!-- CONFIRM -->
+<div class="box">
+<button id="sendBtn" class="btn whatsapp">
+Confirm Order & Send on WhatsApp
+</button>
+</div>
 
 </div>
 
 <script>
-/* ================= CONFIG (CHANGE THIS) ================= */
-const UPI_ID = "robyjaison@oksbi";            // 🔴 YOUR UPI ID
-const SHOP_NAME = "FOOBLITZ";
-const WHATSAPP = "918848882453";          // 🔴 YOUR WHATSAPP NUMBER (India)
+/* ================== CONFIG ================== */
+const UPI_ID = "robyjaison@oksbi";               // ex: fooblitz@okaxis
+const WHATSAPP = "918848882453";            // ex: 919876543210
+const SHOP = "FOOBLITZ";
 
-/* ================= LOGIC ================= */
+/* ================== CART ================== */
 const cart = JSON.parse(localStorage.getItem("fs_cart") || "{}");
 const keys = Object.keys(cart);
 let total = 0;
@@ -92,46 +88,70 @@ const totalEl = document.getElementById("total");
 const emptyEl = document.getElementById("empty");
 
 if(keys.length === 0){
-  emptyEl.textContent = "Your cart is empty.";
+  emptyEl.textContent = "Cart is empty.";
 }else{
   keys.forEach(id=>{
     const p = cart[id];
     const line = document.createElement("div");
-    line.textContent = `${p.name} × ${p.qty} = ₹${p.price * p.qty}`;
+    line.textContent = `${p.name} × ${p.qty} = ₹${p.price*p.qty}`;
     itemsDiv.appendChild(line);
-    total += p.price * p.qty;
+    total += p.price*p.qty;
   });
-  totalEl.textContent = "₹" + total;
+  totalEl.textContent = "₹"+total;
 }
 
-/* ================= UPI ================= */
+/* ================== ORDER ID ================== */
+const ORDER_ID = "FBZ-" + Math.floor(Math.random()*100000);
+
+/* ================== UPI ================== */
 function upiLink(){
-  return `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(SHOP_NAME)}&am=${total}&cu=INR`;
+  return `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${SHOP}&am=${total}&cu=INR&tn=Order%20${ORDER_ID}`;
 }
 
 document.getElementById("upiBtn").onclick = ()=>{
-  if(total <= 0) return;
+  if(total<=0) return;
   window.location.href = upiLink();
 };
 
-if(total > 0){
+if(total>0){
   document.getElementById("qr").src =
-    "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" +
-    encodeURIComponent(upiLink());
+  "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data="+
+  encodeURIComponent(upiLink());
 }
 
-/* ================= WHATSAPP ================= */
-document.getElementById("waBtn").onclick = ()=>{
-  if(total <= 0) return;
+/* ================== COD ================== */
+let paymentMode = "UPI";
+document.getElementById("codBtn").onclick = ()=>{
+  paymentMode = "COD";
+  alert("Cash on Delivery selected");
+};
 
-  let msg = `🛒 *NEW ORDER – ${SHOP_NAME}*%0A%0A`;
+/* ================== WHATSAPP ORDER ================== */
+document.getElementById("sendBtn").onclick = ()=>{
+  const name = document.getElementById("name").value;
+  const phone = document.getElementById("phone").value;
+  const address = document.getElementById("address").value;
+
+  if(!name || !phone || !address){
+    alert("Please fill all details");
+    return;
+  }
+
+  let msg = `🛒 *NEW ORDER* %0A`;
+  msg += `🆔 Order ID: ${ORDER_ID}%0A%0A`;
+
   keys.forEach(id=>{
     const p = cart[id];
-    msg += `👕 ${p.name}%0AQty: ${p.qty}%0A₹${p.price * p.qty}%0A%0A`;
+    msg += `👕 ${p.name} × ${p.qty} = ₹${p.price*p.qty}%0A`;
   });
-  msg += `💰 *Total: ₹${total}*`;
 
-  window.open(`https://wa.me/${WHATSAPP}?text=${msg}`, "_blank");
+  msg += `%0A💰 Total: ₹${total}`;
+  msg += `%0A💳 Payment: ${paymentMode}`;
+  msg += `%0A%0A👤 ${name}`;
+  msg += `%0A📞 ${phone}`;
+  msg += `%0A🏠 ${address}`;
+
+  window.open(`https://wa.me/${WHATSAPP}?text=${msg}`,"_blank");
   localStorage.removeItem("fs_cart");
 };
 </script>
